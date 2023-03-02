@@ -13,10 +13,49 @@ This is a simple implementation of the `ls` command in Haskell. It lists the con
 To use the ls command, open a terminal and navigate to the directory where the ls executable is located. You can then run the command with the following syntax:
 
 ```console
-./haskells [path]
+./haskells [PATH] [OPTIONS]
 ```
 
-Where path is the optional path to the directory you want to list. If path is not specified, the current directory will be listed.
+Where `PATH` is the optional path to the directory you want to list. If path is not specified, the current directory will be listed.
+
+## Options
+
+- `-a`, `--all`: Display all files, including hidden files.
+- `-v`, `--version`: Print the version number.
+- `-h`, `--help`: Print a help message with a list of available options.
+
+## Examples
+
+List the contents of the current directory:
+
+```console
+./haskells
+```
+
+List the contents of a specified directory:
+
+```console
+./haskells /path/to/directory
+
+```
+
+List all files in a directory:
+
+```console
+./haskells -a /path/to/directory
+```
+
+Display the version number:
+
+```console
+./haskells --version
+```
+
+Display the help message:
+
+```console
+./haskells --help
+```
 
 ## Compiling the Program
 
