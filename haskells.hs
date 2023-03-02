@@ -1,7 +1,9 @@
 import qualified Data.Maybe
-import System.Directory (listDirectory)
+import System.Console.GetOpt (ArgDescr (NoArg), ArgOrder (Permute), OptDescr (Option), getOpt, usageInfo)
+import System.Directory (doesDirectoryExist, listDirectory)
 import System.Environment (getArgs)
-import System.FilePath (takeExtension)
+import System.FilePath (takeExtension, takeFileName)
+import System.IO (hPutStrLn, stderr)
 
 -- Define ANSI escape sequences for colorizing output
 resetColor :: String
@@ -80,9 +82,45 @@ formatColoredFileName path =
         _ -> whiteColor
    in colorCode ++ getIcon path ++ " " ++ path ++ resetColor
 
+-- Option Manager
+data Flag = All | Version | Help deriving (Eq)
+
+options :: [OptDescr Flag]
+options =
+  [ Option ['a'] ["all"] (NoArg All) "Display all files, including hidden files.",
+    Option ['v'] ["version"] (NoArg Version) "Print the version number.",
+    Option ['h'] ["help"] (NoArg Help) "Print a help message with a list of available options."
+  ]
+
+version :: String
+version = "1.0.0"
+
+helpMessage :: String
+helpMessage = usageInfo "Usage: haskells [DIRECTORY] [OPTIONS]" options
+
+getOptions :: [String] -> IO ([Flag], [String])
+getOptions argv =
+  case getOpt Permute options argv of
+    (o, n, []) -> return (o, n)
+    (_, _, errs) -> ioError (userError (concat errs ++ helpMessage))
+
 main :: IO ()
 main = do
   args <- getArgs
-  let path = if null args then "." else head args
-  files <- listDirectory path
-  mapM_ (putStrLn . formatColoredFileName) files
+  (flags, path) <- getOptions args
+  case flags of
+    [Help] -> putStrLn helpMessage
+    [Version] -> putStrLn version
+    _ -> do
+      let dir = if null path then "." else head path
+      isDir <- doesDirectoryExist dir
+      if isDir
+        then do
+          files <- listDirectory dir
+          let filteredFiles = if All `elem` flags then files else filter (not . isHidden) files
+          mapM_ (putStrLn . formatColoredFileName) filteredFiles
+        else hPutStrLn stderr ("Error: " ++ dir ++ " is not a directory")
+
+-- Helper Functions
+isHidden :: FilePath -> Bool
+isHidden path = take 1 (takeFileName path) == "."
