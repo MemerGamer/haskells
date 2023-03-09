@@ -33,24 +33,71 @@ whiteColor = "\x1b[37m"
 -- Map file extensions to icons
 iconMap :: [(String, String)]
 iconMap =
-  [ (".hs", "λ"),
-    (".txt", "📄"),
-    (".png", "🖼️"),
-    (".jpg", "📷"),
-    (".jpeg", "📷"),
-    (".gif", "🎞️"),
-    (".pdf", "📚"),
-    (".docx", "📝"),
-    (".odt", "📝"),
-    (".wav", "🎵"),
-    (".mp3", "🎵"),
-    (".flac", "🎵"),
-    (".exe", "💻"),
-    (".zip", "📦"),
-    (".tar", "📦"),
-    (".gz", "📦")
+  [ (".hs", "🚀")
+  , (".txt", "📄")
+  , (".md", "📝")
+  , (".pdf", "📚")
+  , (".docx", "📝")
+  , (".odt", "📝")
+  , (".png", "🖼️")
+  , (".jpg", "📷")
+  , (".jpeg", "📷")
+  , (".gif", "🎞️")
+  , (".svg", "🎨")
+  , (".html", "🌐")
+  , (".css", "🎨")
+  , (".js", "🌐")
+  , (".ts", "🌐")
+  , (".json", "🗄️")
+  , (".xml", "🗄️")
+  , (".mp3", "🎵")
+  , (".wav", "🎵")
+  , (".flac", "🎵")
+  , (".mp4", "🎞️")
+  , (".mkv", "🎞️")
+  , (".avi", "🎞️")
+  , (".exe", "💻")
+  , (".zip", "🗜️")
+  , (".tar", "🗜️")
+  , (".gz", "🗜️")
+  , (".hs-boot", "👢")
+  , (".hsc", "🔬")
+  , (".lhs", "📝")
+  , (".cpphs", "🐘")
+  , (".c", "🐘")
+  , (".cpp", "🐘")
+  , (".cc", "🐘")
+  , (".cxx", "🐘")
+  , (".h", "🐘")
+  , (".hh", "🐘")
+  , (".hpp", "🐘")
+  , (".hxx", "🐘")
+  , (".m", "🍎")
+  , (".mm", "🍎")
+  , (".sh", "💻")
+  , (".py", "🐍")
+  , (".rb", "💎")
+  , (".php", "🐘")
+  , (".pl", "🦕")
+  , (".t", "🦕")
+  , (".pm", "🦕")
+  , (".ml", "🧪")
+  , (".mli", "🧪")
+  , (".mll", "🧪")
+  , (".mly", "🧪")
+  , (".hsig", "📖")
+  , (".hie", "📈")
+  , (".o", "🧱")
+  , (".hi", "📖")
+  , (".dyn_hi", "📖")
+  , (".dyn_o", "🧱")
+  , (".a", "🗃️")
+  , (".lib", "🗃️")
+  , (".dll", "🗃️")
+  , (".so", "🗃️")
+  , (".dylib", "🗃️")
+  , (".exe.manifest", "🕵️")
   ]
-
 -- Get the icon for a file based on its extension
 getIcon :: FilePath -> String
 getIcon path = Data.Maybe.fromMaybe "📂" (lookup (takeExtension path) iconMap)
@@ -64,23 +111,70 @@ formatColoredFileName :: FilePath -> String
 formatColoredFileName path =
   let colorCode = case takeExtension path of
         ".hs" -> magentaColor
-        ".txt" -> blueColor
-        ".png" -> greenColor
-        ".jpg" -> greenColor
-        ".jpeg" -> greenColor
-        ".gif" -> greenColor
-        ".pdf" -> redColor
-        ".docx" -> redColor
-        ".odt" -> redColor
-        ".wav" -> yellowColor
-        ".mp3" -> yellowColor
-        ".flac" -> yellowColor
-        ".exe" -> cyanColor
-        ".zip" -> cyanColor
-        ".tar" -> cyanColor
-        ".gz" -> cyanColor
-        _ -> whiteColor
+        ".lhs" -> magentaColor
+        ".hsc" -> magentaColor
+        ".hs-boot" -> magentaColor
+        ".cpphs" -> magentaColor
+        ".c" -> blueColor
+        ".cc" -> blueColor
+        ".cpp" -> blueColor
+        ".docx" -> blueColor
+        ".doc" -> blueColor
+        ".odt" -> blueColor
+        ".cxx" -> blueColor
+        ".h" -> blueColor
+        ".js" -> blueColor
+        ".ts" -> blueColor
+        ".hh" -> blueColor
+        ".hpp" -> blueColor
+        ".hxx" -> blueColor
+        ".m" -> greenColor
+        ".html" -> greenColor
+        ".xls" -> greenColor
+        ".xlsx" -> greenColor
+        ".mm" -> greenColor
+        ".sh" -> cyanColor
+        ".py" -> yellowColor
+        ".ppt" -> yellowColor
+        ".pptx" -> yellowColor
+        ".rb" -> redColor
+        ".php" -> blueColor
+        ".pdf" -> blueColor
+        ".pl" -> yellowColor
+        ".t" -> yellowColor
+        ".pm" -> yellowColor
+        ".ml" -> magentaColor
+        ".torrent" -> magentaColor
+        ".mli" -> magentaColor
+        ".mll" -> magentaColor
+        ".mly" -> magentaColor
+        ".css" -> magentaColor
+        ".hsig" -> blueColor
+        ".hie" -> blueColor
+        ".o" -> magentaColor
+        ".hi" -> magentaColor
+        ".dyn_hi" -> magentaColor
+        ".dyn_o" -> magentaColor
+        ".a" -> blueColor
+        ".lib" -> blueColor
+        ".dll" -> cyanColor
+        ".so" -> cyanColor
+        ".dylib" -> cyanColor
+        ".exe.manifest" -> cyanColor
+        ext | ext `elem` audioExtensions -> redColor
+            | ext `elem` videoExtensions -> yellowColor
+            | ext `elem` imageExtensions -> greenColor
+            | otherwise -> whiteColor
    in colorCode ++ getIcon path ++ " " ++ path ++ resetColor
+
+audioExtensions :: [String]
+audioExtensions = [".mp3", ".wav", ".flac"]
+
+videoExtensions :: [String]
+videoExtensions = [".mp4", ".mkv", ".avi", ".gif"]
+
+imageExtensions :: [String]
+imageExtensions = [".png", ".jpg", ".jpeg", ".gif", ".svg"]
 
 -- Option Manager
 data Flag = All | Version | Help deriving (Eq)
